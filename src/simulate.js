@@ -36,11 +36,22 @@ function getShapes(elements) {
 };
 
 function splitElementsIntoGroupsByElementLevel(elements){
+  var levels = {};
 
+  elements.forEach((gate, i) => {
+    if(gate.level in levels){
+      levels[gate.level].push(gate);
+    } else {
+      levels[gate.level] = [gate];
+    }
+  });
+
+  console.log(levels);
+
+  return levels;
 };
 
 function matchElements(levels) {
-  var particles = particles;
   var matchedObjects = [];
 
   //this.center.constructor.name ===
@@ -349,4 +360,4 @@ function simulate(matchedObjects){
   return newObjects;
 }
 
-module.exports = { getShapes,  findAbove, matchSingleGate, matchDoubleGate, matchTrippleGate, matchQuadrupleGate, removeSingleObjects, createObject, drawObjects, simulate};
+module.exports = { getShapes,  splitElementsIntoGroupsByElementLevel, matchElements, matchSingleGate, matchDoubleGate, matchTrippleGate, matchQuadrupleGate, removeSingleObjects, createObject, drawObjects, simulate};
