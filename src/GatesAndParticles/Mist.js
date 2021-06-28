@@ -20,4 +20,15 @@ function Mist(colorLeft=0, signLeft='+', colorRight=0, signRight='+', x, y, widt
     return( false );
   }
 
+  this.elementSize = function () {
+    return 2;
+  }
+
+  this.elementType = function () {
+    return "Mist";
+  }
+
+  this.updateLevel = function updateLevel () {
+    this.level = this.y + (this.height/2);
+  }
 }

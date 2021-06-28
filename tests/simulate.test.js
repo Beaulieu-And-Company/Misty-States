@@ -26,11 +26,11 @@ test('simple simulate test with not gate: black in, white out', () => {
 test('simple simulate test with two consecutive not gates: white in, white out', () => {
 
     let white_ball_in = new ball.Ball(0, '+', 15, 15, 5);
-    let white_ball_out = new ball.Ball(0, '+', 15, 45, 5);
+    let white_ball_out = new ball.Ball(0, '+', 15, 55, 5);
     let not_gate_1 = new not.Not(10, 20, 10, 10);
     let not_gate_2 = new not.Not(10, 35, 10, 10);
 
-    let elements = [not_gate_1, not_gate_2, particles];
+    let elements = [not_gate_1, not_gate_2, white_ball_in];
 
     expect(JSON.stringify(simulate.getShapes(elements))).toStrictEqual(JSON.stringify([white_ball_out]));
 });

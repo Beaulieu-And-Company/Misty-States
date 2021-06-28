@@ -13,12 +13,13 @@ var tween = null;
 var blockSnapSize = 30;
 var gridSnapSize = 60;
 var userGeneratedParticles = [];
+var blockMatchingFunctions = {};
 
 function getShapes(elements) {
 
   let levels = splitElementsIntoGroupsByElementLevel(elements);
 
-  var matchedObjects = matchElements(levels);
+  var matchedObjects = matchLevels(levels);
 
   matchedObjects = removeSingleObjects(matchedObjects);
 
@@ -51,36 +52,28 @@ function splitElementsIntoGroupsByElementLevel(elements){
   return levels;
 };
 
-function matchElements(levels) {
+function matchLevels(levels) {
+  let keys = Object.keys(levels);
+  var aboveRow = levels[keys[0]];
+
+  for (var i = 1; i < keys.length; i++) {
+    aboveRow = matchElements(aboveRow, levels[keys[i]]);
+  }
+
+  return aboveRow;
+};
+
+function matchElements(aboveRow, belowRow){
   var matchedObjects = [];
 
-  //this.center.constructor.name ===
-  gates.forEach((gate, i) => {
-    console.log("Gate: " + gate.constructor.name.toLowerCase());
+  belowRow.forEach((element, i) => {
+    let funcName = 'match' + element.elementSize + 'Element';
 
-    if(gate.constructor.name.toLowerCase().includes("ccswap") ||
-        gate.constructor.name.toLowerCase().includes("ccnot")){
-      let temp = matchQuadrupleGate(gate, particles);
-      particles = temp[1];
-      matchedObjects.push(temp[0]);
-    } else if(gate.constructor.name.toLowerCase().includes("cswap")){
-      let temp = matchTrippleGate(gate, particles);
-      particles = temp[1];
-      matchedObjects.push(temp[0]);
-    } else if(gate.constructor.name.toLowerCase().includes("cnot") ||
-        gate.constructor.name.toLowerCase().includes("swap")){
-      let temp = matchDoubleGate(gate, particles);
-      particles = temp[1];
-      matchedObjects.push(temp[0]);
-    } else if(gate.constructor.name.toLowerCase().includes("not") ||
-        gate.constructor.name.toLowerCase().includes("pete") ||
-        gate.constructor.name.toLowerCase().includes("pipe")){
-      let temp = matchSingleGate(gate, particles);
-      particles = temp[1];
-      matchedObjects.push(temp[0]);
-    } else {
-      console.log("Something went wrong while matching gates and particles");
-    }
+    console.log("Element: " + funcName);
+
+    let temp = blockMatchingFunctions[funcName](element, aboveRow);
+    aboveRow = temp[1];
+    matchedObjects.push(temp[0]);
   });
 
   return matchedObjects;
@@ -88,32 +81,23 @@ function matchElements(levels) {
 
 
 
-function matchSingleGate(gate, particles) {
-  console.log("matchSingleGate");
-  let x1 = parseInt(gate.x);
-  let x2 = parseInt(gate.x + gate.width);
-  let y1 = parseInt(gate.y - gate.height);
-  let y2 = parseInt(gate.y);
+blockMatchingFunctions.match1Element = function (element, aboveRow) {
+  console.log("match1Element");
 
-  var particles = particles;
-  var gateObject = gate;
-
-  particles.forEach((particle, i) => {
-    let x = parseInt(particle.x);
-    let y = parseInt(particle.y);
-
-    console.log("(x1 <= x) && (x <= x2) && (y1 <= y) && (y <= y2)\n(" + x1 + " <= " + x + ") && (" + x + " <= " + x2 + ") && (" + y1 + " <= " + y + ") && (" + y + " <= " + y2 + ") === " + ((x1 <= x) && (x <= x2) && (y1 <= y) && (y <= y2)));
-    if((x1 <= x) && (x <= x2) && (y1 <= y) && (y <= y2)){
-      gateObject.center = particle;
-      particles.splice(i, 1);
-      return [gateObject, particles];
-    }
+  aboveRow.forEach((elementAbove, i) => {
+    elementAbove.getCenter().forEach((center, j) => {
+      if(element.isBelow(center[0], center[1])){
+        element.center = elementAbove;
+        aboveRow.splice(i, 1);
+        return [element, aboveRow];
+      }
+    });
   });
 
-  return [gateObject, particles];
+  return [element, aboveRow];
 }
 
-function matchDoubleGate(gate, particles) {
+blockMatchingFunctions.match2Element = function (element, aboveRow) {
   console.log("matchDoubleGate");
   let x1 = parseInt(gate.x);
   let x2 = parseInt(gate.x + gate.width/2);
@@ -151,7 +135,7 @@ function matchDoubleGate(gate, particles) {
   return [gateObject, particles];
 }
 
-function matchTrippleGate(gate, particles) {
+blockMatchingFunctions.match3Element = function (element, aboveRow) {
   console.log("matchTrippleGate");
   let x1 = parseInt(gate.x);
   let x2 = parseInt(gate.x + gate.width/3);
@@ -211,7 +195,7 @@ function matchTrippleGate(gate, particles) {
   return [gateObject, newParticles];
 }
 
-function matchQuadrupleGate(gate, particles) {
+blockMatchingFunctions.match4Element = function (element, aboveRow) {
   console.log("matchTrippleGate");
   let x1 = parseInt(gate.x);
   let x2 = parseInt(gate.x + gate.width/4);
@@ -360,4 +344,4 @@ function simulate(matchedObjects){
   return newObjects;
 }
 
-module.exports = { getShapes,  splitElementsIntoGroupsByElementLevel, matchElements, matchSingleGate, matchDoubleGate, matchTrippleGate, matchQuadrupleGate, removeSingleObjects, createObject, drawObjects, simulate};
+module.exports = { getShapes, matchLevels, splitElementsIntoGroupsByElementLevel, matchElements, removeSingleObjects, createObject, drawObjects, simulate};

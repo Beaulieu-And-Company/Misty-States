@@ -16,7 +16,7 @@ function CCSwap(x, y, width, height){
     console.log("center: " + ((this.center_right.color === 1) ? 'White' : 'Black'));
     console.log("right: " + ((this.right.color === 1) ? 'White' : 'Black'));
 
-    if(this.left.constructor.name === 'Ball'){
+    if(this.center.elementType === 'Ball'){
       //Not first object if second object is white
       this.left.y += 2 * this.height;
       this.center_left.y += 2 * this.height;
@@ -34,7 +34,7 @@ function CCSwap(x, y, width, height){
         console.log("\n\nCSwap ELSE");
         return [this.left, this.center_left, this.center_right, this.right];
       }
-    } else if(this.left.constructor.name === 'Mist'){
+    } else if(this.center.elementType === 'Mist'){
       // TODO: handle mist
       return [this.left, this.center_left, this.center_right, this.right];
     } else {
@@ -54,5 +54,17 @@ function CCSwap(x, y, width, height){
 
   this.isComplete = function () {
     return( !(this.left === null) && !(this.center_left === null) && !(this.center_right === null) && !(this.right === null) );
+  }
+
+  this.elementSize = function () {
+    return 4;
+  }
+
+  this.elementType = function () {
+    return "Gate";
+  }
+
+  this.updateLevel = function updateLevel() {
+    this.level = this.y + (this.height/2);
   }
 }

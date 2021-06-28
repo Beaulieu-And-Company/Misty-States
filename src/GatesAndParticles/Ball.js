@@ -5,15 +5,27 @@ function Ball(color=0, sign='+', x, y, radius){ //0 is black, 1 is white
   this.y = y;
   this.radius = radius;
   this.level = this.y;
+  this.elementType = "Ball";
+  this.elementSize = 1;
 
   this.toString = function toString(){
     return ((this.color === 1) ? 'White' : 'Black') + ' Ball with ' + this.sign + ' sign';
   };
 
-
-  this.isRunnable = function () {
-    return( false );
+  this.isComplete = function isComplete() {
+    return true;
   }
 
+  this.updateLevel = function updateLevel() {
+    this.level = this.y;
+  }
+
+  this.isBelow = function isBelow(x, y) {
+    return false;
+  }
+
+  this.getCenter = function getCenter(){
+    return [[parseInt(this.x), parseInt(this.y)]];
+  }
 }
 module.exports = { Ball };

@@ -30,11 +30,37 @@ function Swap(x, y, width, height){
     return 'Swap-Gate';
   };
 
-  this.isRunnable = function () {
-    return( true );
-  }
-
   this.isComplete = function () {
     return( !(this.left === null) && !(this.right === null) );
   }
+
+  this.isComplete = function isComplete() {
+    return( !(this.center === null) ? this.center.isComplete() : false);
+  }
+
+  this.updateLevel = function updateLevel() {
+    this.level = this.y + (this.height/2);
+  }
+
+  /** This checks if the given center of an object is above
+   *  x is the x coordinate of the center of the object.
+   *  y is the y coordinate of the center of the object.
+   */
+  this.isBelow = function isBelow(otherX, otherY) {
+    let x1 = parseInt(this.x);
+    let x2 = parseInt(this.x + this.width);
+    let y1 = parseInt(this.y - this.height);
+    let y2 = parseInt(this.y);
+
+    // console.log("Not Gate " + otherX + " | " + otherY);
+    // console.log("(x1 <= x) && (x <= x2) && (y1 <= y) && (y <= y2)\n(" + x1 + " <= " + otherX + ") && (" + otherX + " <= " + x2 + ") && (" + y1 + " <= " + otherY + ") && (" + otherY + " <= " + y2 + ") === " + ((x1 <= otherX) && (otherX <= x2) && (y1 <= otherY) && (otherY <= y2)));
+    return (x1 <= otherX) && (otherX <= x2) && (y1 <= otherY) && (otherY <= y2);
+  }
+
+  this.getCenter = function getCenter(){
+    return [[parseInt(this.x) + parseInt(this.width / 2),
+      parseInt(this.y) + parseInt(this.height / 2)]];
+  }
 }
+
+module.exports = { Not };

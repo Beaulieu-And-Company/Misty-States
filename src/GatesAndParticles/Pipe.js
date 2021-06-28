@@ -7,10 +7,10 @@ function Pipe(x, y, width, height){
   this.level = this.y + (this.height/2);
 
   this.run = function pipe(){
-    if(this.center.constructor.name === 'Ball'){
+    if(this.center.elementType === 'Ball'){
       this.center.y += 2 * this.height;
       return [this.center];
-    } else if(this.center.constructor.name === 'Mist'){
+    } else if(this.center.elementType === 'Mist'){
       // TODO: handle mist
       return [this.center]
     } else {
@@ -24,11 +24,19 @@ function Pipe(x, y, width, height){
     return 'Pipe-Gate';
   };
 
-  this.isRunnable = function () {
-    return( true );
+  this.updateLevel = function updateLevel() {
+    this.level = this.y + (this.height/2);
   }
 
-  this.isComplete = function () {
-    return( !(this.center === null) );
+  this.elementSize = function elementSize() {
+    return 1;
+  }
+
+  this.elementType = function elementType() {
+    return "Gate";
+  }
+
+  this.updateLevel = function updateLevel () {
+    this.level = this.y + (this.height/2);
   }
 }

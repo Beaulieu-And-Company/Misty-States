@@ -8,7 +8,7 @@ function CNot(x, y, width, height){
   this.level = this.y + (this.height/2);
 
   this.run = function cnot(){
-    if(this.left.constructor.name === 'Ball'){
+    if(this.left.elementType === 'Ball'){
       //Not first object if second object is white
       this.left.y += 2 * this.height;
       this.right.y += 2 * this.height;
@@ -20,7 +20,7 @@ function CNot(x, y, width, height){
       } else { //don't Not first object
         return [this.left, this.right];
       }
-    } else if(this.left.constructor.name === 'Mist'){
+    } else if(this.left.elementType === 'Mist'){
       // TODO: handle mist
       return [this.left, this.right]
     } else {
@@ -40,5 +40,17 @@ function CNot(x, y, width, height){
 
   this.isComplete = function () {
     return( !(this.left === null) && !(this.right === null) );
+  }
+
+  this.elementSize = function () {
+    return 2;
+  }
+
+  this.elementType = function () {
+    return "Gate";
+  }
+
+  this.updateLevel = function updateLevel () {
+    this.level = this.y + (this.height/2);
   }
 }
