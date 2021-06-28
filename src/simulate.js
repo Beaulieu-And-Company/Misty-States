@@ -7,7 +7,7 @@
 var width = 1136;
 var height = 420;
 
-console.log("Height: " + height + " | Width: " + width);
+// console.log("Height: " + height + " | Width: " + width);
 var shadowOffset = 20;
 var tween = null;
 var blockSnapSize = 30;
@@ -18,6 +18,8 @@ var blockMatchingFunctions = {};
 function getShapes(elements) {
 
   let levels = splitElementsIntoGroupsByElementLevel(elements);
+
+  //console.log(levels);
 
   var matchedObjects = matchLevels(levels);
 
@@ -47,7 +49,7 @@ function splitElementsIntoGroupsByElementLevel(elements){
     }
   });
 
-  console.log(levels);
+  //console.log(levels);
 
   return levels;
 };
@@ -68,10 +70,7 @@ function matchElements(aboveRow, belowRow){
 
   belowRow.forEach((element, i) => {
     let funcName = 'match' + element.elementSize + 'Element';
-
-    console.log("Element: " + funcName);
-
-    let temp = blockMatchingFunctions[funcName](element, aboveRow);
+    let temp = matchElement(element, aboveRow);
     aboveRow = temp[1];
     matchedObjects.push(temp[0]);
   });
@@ -81,16 +80,16 @@ function matchElements(aboveRow, belowRow){
 
 
 
-blockMatchingFunctions.match1Element = function (element, aboveRow) {
-  console.log("match1Element");
+function matchElement (element, aboveRow) {
+  //console.log("match1Element");
 
-  aboveRow.forEach((elementAbove, i) => {
-    elementAbove.getCenter().forEach((center, j) => {
-      if(element.isBelow(center[0], center[1])){
-        element.center = elementAbove;
-        aboveRow.splice(i, 1);
-        return [element, aboveRow];
+  aboveRow.forEach((elementAbove, i) => { //Loops through above elements
+    elementAbove.getCenterCoordinates().forEach((centerCoordinates, j) => { //loops through all of the centers of the elements.
+
+      if(element.isBelow(centerCoordinates[0], centerCoordinates[1])){
+        element.addCenter(centerCoordinates[0], centerCoordinates[1], elementAbove, elementAbove.getCenterPosition(centerCoordinates[0], centerCoordinates[1]));
       }
+
     });
   });
 
@@ -98,41 +97,21 @@ blockMatchingFunctions.match1Element = function (element, aboveRow) {
 }
 
 blockMatchingFunctions.match2Element = function (element, aboveRow) {
-  console.log("matchDoubleGate");
-  let x1 = parseInt(gate.x);
-  let x2 = parseInt(gate.x + gate.width/2);
-  let x3 = parseInt(gate.x + gate.width);
-  let y1 = parseInt(gate.y - gate.height);
-  let y2 = parseInt(gate.y);
+  console.log("match2Element");
 
-  var particles = particles;
-  var gateObject = gate;
+  aboveRow.forEach((elementAbove, i) => {
+    elementAbove.getCenterCoordinates().forEach((centerCoordinates, j) => {
+      console.log("IS BELOW? " + element.isBelow(centerCoordinates[0], centerCoordinates[1]));
+      if(element.isBelow(centerCoordinates[0], centerCoordinates[1])){
+        console.log("ELEMENT POSITION " + elementAbove.getCenterPosition(centerCoordinates[0], centerCoordinates[1]));
+        element.addCenter(centerCoordinates[0], centerCoordinates[1], elementAbove, elementAbove.getCenterPosition(centerCoordinates[0], centerCoordinates[1]));
+        //return [element, aboveRow];
+      }
+    });
+    console.log("--------------------");
+  });
 
-  for (var i = 0; i < particles.length; i++) {
-    let particle = particles[i];
-    let x = parseInt(particle.x);
-    let y = parseInt(particle.y);
-
-    if((x1 <= x) && (x <= x2) && (y1 <= y) && (y <= y2)){
-      gateObject.left = particle;
-      particles.splice(i, 1);
-      break;
-    }
-  }
-
-  for (var i = 0; i < particles.length; i++) {
-    let particle = particles[i];
-    let x = particle.x;
-    let y = particle.y;
-
-    if((x2 < x) && (x <= x3) && (y1 <= y) && (y <= y2)){
-      gateObject.right = particle;
-      particles.splice(i, 1);
-      return [gateObject, particles];
-    }
-  }
-
-  return [gateObject, particles];
+  return [element, aboveRow];
 }
 
 blockMatchingFunctions.match3Element = function (element, aboveRow) {
