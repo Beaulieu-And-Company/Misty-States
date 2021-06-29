@@ -140,3 +140,5 @@ module.exports = { Swap };
 //
 //   return [element, aboveRow];
 // }
+//black_ball_in_1, black_ball_in_2, black_ball_in_3, white_ball_in_1, black_ball_in_4, black_ball_in_5, white_ball_in_2, black_ball_in_6
+
