@@ -26,11 +26,12 @@ function Swap(x, y, width, height){
 
       this.left.updateLevel();
       this.right.updateLevel();
+      this.alreadyRan = true;
 
       tmp = this.left.x;
       this.left.x = this.right.x;
       this.right.x = tmp;
-      this.alreadyRan = true;
+
 
       tmp = this.left;
       this.left = this.right;
