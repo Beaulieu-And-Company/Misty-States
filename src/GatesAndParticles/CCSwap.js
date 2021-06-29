@@ -68,3 +68,5 @@ function CCSwap(x, y, width, height){
     this.level = this.y + (this.height/2);
   }
 }
+
+module.exports = { CSwap };
