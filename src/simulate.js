@@ -19,8 +19,6 @@ function getShapes(elements) {
 
   let levels = splitElementsIntoGroupsByElementLevel(elements);
 
-  //console.log(levels);
-
   var matchedObjects = matchLevels(levels);
 
   matchedObjects = removeSingleObjects(matchedObjects);
@@ -49,8 +47,6 @@ function splitElementsIntoGroupsByElementLevel(elements){
     }
   });
 
-  //console.log(levels);
-
   return levels;
 };
 
@@ -69,7 +65,6 @@ function matchElements(aboveRow, belowRow){
   var matchedObjects = [];
 
   belowRow.forEach((element, i) => {
-    let funcName = 'match' + element.elementSize + 'Element';
     let temp = matchElement(element, aboveRow);
     aboveRow = temp[1];
     matchedObjects.push(temp[0]);
@@ -78,37 +73,17 @@ function matchElements(aboveRow, belowRow){
   return matchedObjects;
 };
 
-
-
 function matchElement (element, aboveRow) {
-  //console.log("match1Element");
 
   aboveRow.forEach((elementAbove, i) => { //Loops through above elements
     elementAbove.getCenterCoordinates().forEach((centerCoordinates, j) => { //loops through all of the centers of the elements.
 
       if(element.isBelow(centerCoordinates[0], centerCoordinates[1])){
-        element.addCenter(centerCoordinates[0], centerCoordinates[1], elementAbove, elementAbove.getCenterPosition(centerCoordinates[0], centerCoordinates[1]));
+        element.addCenter(centerCoordinates[0], centerCoordinates[1], elementAbove,
+                            elementAbove.getCenterPosition(centerCoordinates[0], centerCoordinates[1]));
       }
 
     });
-  });
-
-  return [element, aboveRow];
-}
-
-blockMatchingFunctions.match2Element = function (element, aboveRow) {
-  console.log("match2Element");
-
-  aboveRow.forEach((elementAbove, i) => {
-    elementAbove.getCenterCoordinates().forEach((centerCoordinates, j) => {
-      console.log("IS BELOW? " + element.isBelow(centerCoordinates[0], centerCoordinates[1]));
-      if(element.isBelow(centerCoordinates[0], centerCoordinates[1])){
-        console.log("ELEMENT POSITION " + elementAbove.getCenterPosition(centerCoordinates[0], centerCoordinates[1]));
-        element.addCenter(centerCoordinates[0], centerCoordinates[1], elementAbove, elementAbove.getCenterPosition(centerCoordinates[0], centerCoordinates[1]));
-        //return [element, aboveRow];
-      }
-    });
-    console.log("--------------------");
   });
 
   return [element, aboveRow];
